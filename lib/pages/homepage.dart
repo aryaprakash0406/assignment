@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:paprcliptask/models/performance.dart';
 import 'package:paprcliptask/remote_service/remotedata.dart';
@@ -48,7 +49,8 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       const Text(
                         "Overview",
-                        style: TextStyle(fontSize: 20, color: Colors.blueGrey),
+                        style:
+                            TextStyle(fontSize: 20, color: Color(0xff000087)),
                       ),
                       const Divider(
                         color: Colors.black,
@@ -70,12 +72,120 @@ class _HomePageState extends State<HomePage> {
                           _overView!.overViewYield.toString()),
                     ],
                   ),
-                )
+                ),
+                const Padding(
+                  padding: EdgeInsets.only(right: 10),
+                  child: Align(
+                    alignment: Alignment.bottomRight,
+                    child: Text(
+                      "View More",
+                      style: TextStyle(color: Colors.orange),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "Performance",
+                        style:
+                            TextStyle(fontSize: 20, color: Color(0xff000087)),
+                      ),
+                      const Divider(
+                        color: Colors.black,
+                        thickness: 0.5,
+                      ),
+                      ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: _performanceList?.length,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.only(top: 15),
+                              child: performanceTile(
+                                  _performanceList![index].label,
+                                  _performanceList![index].changePercent),
+                            );
+                          }),
+                    ],
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.only(right: 10),
+                  child: Align(
+                    alignment: Alignment.bottomRight,
+                    child: Text(
+                      "View More",
+                      style: TextStyle(color: Colors.orange),
+                    ),
+                  ),
+                ),
               ],
             )
           : const Center(
               child: CircularProgressIndicator(),
             ),
+    );
+  }
+
+  Row performanceTile(String label, double percent) {
+    var modifiedPercent = double.parse(percent.toStringAsFixed(1));
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        SizedBox(
+            width: 60,
+            child: Text(
+              label,
+            )),
+        Row(
+          children: [
+            Stack(
+              children: [
+                Container(
+                  height: 20,
+                  width: 200,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    color: const Color(0xffD9D9D9),
+                  ),
+                ),
+                AnimatedContainer(
+                  duration: const Duration(microseconds: 800),
+                  height: 20,
+                  width:
+                      percent > 400 ? 200 : 200 * modifiedPercent.abs() / 200,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    color: percent > 0 ? Colors.green : Colors.red,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        SizedBox(
+          width: 70,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              percent > 0
+                  ? const Icon(
+                      CupertinoIcons.arrowtriangle_up_fill,
+                      size: 10,
+                      color: Colors.green,
+                    )
+                  : const Icon(
+                      CupertinoIcons.arrowtriangle_down_fill,
+                      size: 10,
+                      color: Colors.red,
+                    ),
+              Text("${(percent).toStringAsFixed(1)}%")
+            ],
+          ),
+        )
+      ],
     );
   }
 
@@ -85,7 +195,7 @@ class _HomePageState extends State<HomePage> {
       children: [
         Text(title),
         const SizedBox(
-          height: 40,
+          height: 30,
         ),
         Row(
           children: [
